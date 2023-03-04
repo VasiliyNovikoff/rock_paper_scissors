@@ -3,38 +3,21 @@ from environs import Env
 
 
 @dataclass
-class DatabaseConfig:
-    database: str  # Название базы данных
-    db_host: str  # URL-адрес базы данных
-    db_user: str  # Username пользователя базы данных
-    db_password: str  # Пароль к базе данных
-
-
-@dataclass
 class TgBot:
-    token: str  # Токен для доступа к боту
-    admins_id: list[int]  # Список id администраторов бота
+    token: str          # Токен для доступа к Телеграм-боту
 
 
 @dataclass
 class Config:
     tg_bot: TgBot
-    db: DatabaseConfig
 
 
-# Создаём экземпляр класса Config и наполняем его данными из переменных окружения
-def load_config(path: str | None) -> Config:
-    # Создаём экземпляр класса Env
-    env: Env = Env()
-
-    # Добавляем в окружение данные прочитанные из файла .env
+def load_config(path: str | None = None) -> Config:
+    env = Env()
     env.read_env()
+    return Config(tg_bot=TgBot(token=env('BOT_TOKEN')))
 
-    return Config(tg_bot=TgBot(
-            token=env('BOT_TOKEN'),
-            admins_id=list(map(int, env.list('ADMINS_ID')))),
-        db=DatabaseConfig(
-            database=env('DATABASE'),
-            db_host=env('DB_HOST'),
-            db_user=env('DB_USER'),
-            db_password=env("DB_PASSWORD")))
+
+"""Можно упростить: избавиться от класса TgBot, 
+а у класса Config атрибут tg_bot заменить на атрибут token. 
+Но оставим как есть, подразумевая, что проект может расширяться."""

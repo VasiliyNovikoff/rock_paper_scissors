@@ -5,7 +5,10 @@ from config_data.config import load_config
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
-config = load_config('/')
+# В качестве переменной для фукции указывается путь к .env
+# Или ничего, если в одной папке с текущим файлом
+config = load_config()
+
 bot_token = config.tg_bot.token
 
 bot: Bot = Bot(token=bot_token)
